@@ -505,18 +505,18 @@
     <!-- Скрипт калькулятора и логики страницы -->
     <script>
         // Вставь свой реальный юзернейм в Telegram без знака @
-        const TELEGRAM_USERNAME = "your_telegram";
+const TELEGRAM_USERNAME = "reapertr";
 
-        // Обновление ссылок на Telegram в DOM
-        function updateTgLinks() {
-            const defaultTgUrl = `https://t.me/${TELEGRAM_USERNAME}`;
-            const navLink = document.getElementById('navTgLink');
-            const ctaBtn = document.getElementById('ctaTgBtn');
-            const footerLink = document.getElementById('footerTgLink');
-            if (navLink) navLink.href = defaultTgUrl;
-            if (ctaBtn) ctaBtn.href = defaultTgUrl;
-            if (footerLink) footerLink.href = defaultTgUrl;
-        }
+// Обновление ссылок на Telegram в DOM
+function updateTgLinks() {
+    const defaultTgUrl = `https://t.me/${TELEGRAM_USERNAME}`;
+    const navLink = document.getElementById('navTgLink');
+    const ctaBtn = document.getElementById('ctaTgBtn');
+    const footerLink = document.getElementById('footerTgLink');
+    if (navLink) navLink.href = defaultTgUrl;
+    if (ctaBtn) ctaBtn.href = defaultTgUrl;
+    if (footerLink) footerLink.href = defaultTgUrl;
+}
 
         // Параметры калькулятора
         const state = {
@@ -572,15 +572,22 @@
 
         // Расчет цены
         function calculate() {
-            // Формула: базовая цена + небольшая корректировка на объем страниц, умноженная на срочность и плагиат
-            const pageRatio = state.pages / state.defaultPages;
-            // Умеренное влияние страниц (коэффициент 0.6 базы + 0.4 от масштаба страниц)
-            let rawPrice = state.basePrice * (0.6 + 0.4 * pageRatio);
-            rawPrice *= state.urgencyMult;
-            rawPrice *= state.origMult;
+    // Если это отчет по практике и объем маленький (до 4 листов)
+    if (state.typeName && state.typeName.toLowerCase().includes('отчет') && state.pages <= 4) {
+        let miniPrice = 500;
+        if (state.pages >= 3) miniPrice = 700;
+        rawPrice = miniPrice * state.urgencyMult * state.origMult;
+    } else {
+        // Формула: базовая цена + пропорциональный пересчет страниц
+        const pageRatio = state.pages / state.defaultPages;
+        let rawPriceCalc = state.basePrice * (0.4 + 0.6 * pageRatio);
+        rawPriceCalc *= state.urgencyMult;
+        rawPriceCalc *= state.origMult;
+        rawPrice = rawPriceCalc;
+    }
 
-            // Округление до красивых 50 рублей
-            state.totalPrice = Math.round(rawPrice / 50) * 50;
+    // Округление до красивых 50 рублей
+    state.totalPrice = Math.round(rawPrice / 50) * 50;
 
             // Обновление интерфейса
             totalPriceEl.textContent = `${state.totalPrice.toLocaleString('ru-RU')} ₽`;
