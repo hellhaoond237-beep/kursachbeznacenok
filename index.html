@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КурсачБезНаценок — Студенческая помощь без переплат агентствам</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            emerald: '#10b981',
+                            emeraldHover: '#059669',
+                            dark: '#0b0f17',
+                            card: '#111827',
+                            border: '#1f2937'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f17;
+            color: #f3f4f6;
+        }
+        /* Стилизация ползунка */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            height: 8px;
+            border-radius: 9999px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        /* Тост-уведомление */
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-emerald-500 selection:text-white flex flex-col justify-between">
+
+    <!-- Всплывающий Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-8 opacity-0 pointer-events-none bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-emerald-400/30">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span id="toastMessage" class="text-sm font-medium">Текст скопирован!</span>
+    </div>
+
+    <!-- Шапка сайта -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0b0f17]/85 border-b border-gray-800/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-lg">
+                    К
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight text-white">Курсач<span class="text-emerald-400">БезНаценок</span></span>
+                    <span class="hidden sm:inline-block ml-2 text-xs px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">Direct-студент</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center gap-3">
+                <a href="#calc" class="hidden sm:inline-flex text-sm font-medium text-gray-300 hover:text-white transition">
+                    Калькулятор
+                </a>
+                <a href="#faq" class="hidden sm:inline-flex text-sm font-medium text-gray-300 hover:text-white transition">
+                    Вопросы
+                </a>
+                <a id="navTgLink" href="https://t.me/your_telegram" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-semibold px-4 py-2 rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                    </svg>
+                    <span>Написать в TG</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-20">
+
+        <!-- Hero Section -->
+        <section class="text-center space-y-6 max-w-3xl mx-auto">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gray-900 border border-gray-700 text-xs font-medium text-gray-300">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Без посредников и агентских комиссий
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Курсовые и студенческие работы <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
+                    по честной цене от 1 800 ₽
+                </span>
+            </h1>
+            
+            <p class="text-gray-400 text-base sm:text-lg leading-relaxed">
+                Пока агрегаторы берут 6 000–8 000 ₽ и отдают автору копейки, ты заказываешь работу напрямую. С оформлением по методичке ГОСТа, высокой оригинальностью и бесплатными правками.
+            </p>
+
+            <!-- Трастовые бейджи -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 text-left">
+                <div class="bg-gray-900/70 border border-gray-800 p-3.5 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm text-gray-200">Бесплатные правки</div>
+                        <div class="text-xs text-gray-400">Доводим до зачета без доплат</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/70 border border-gray-800 p-3.5 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm text-gray-200">Оплата 50 / 50</div>
+                        <div class="text-xs text-gray-400">Остаток после проверки скринов</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/70 border border-gray-800 p-3.5 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm text-gray-200">Антиплагиат ВУЗ</div>
+                        <div class="text-xs text-gray-400">Нужный процент гарантирован</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Интерактивный калькулятор -->
+        <section id="calc" class="scroll-mt-24">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                <!-- Декоративное свечение -->
+                <div class="absolute -right-24 -top-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="mb-8">
+                    <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Калькулятор стоимости</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Рассчитай цену за 30 секунд</h2>
+                    <p class="text-sm text-gray-400 mt-1">Без скрытых комиссий — фиксированная цена при заказе</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Левая колонка: параметры -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- 1. Тип работы -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2.5">1. Выбери тип работы</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="workTypeContainer">
+                                <button type="button" data-type="course" data-base="1900" data-pages="25" class="work-type-btn active bg-emerald-500/10 border-emerald-500 text-white border p-3 rounded-xl text-left transition hover:border-emerald-500/80">
+                                    <div class="font-semibold text-sm">Курсовая</div>
+                                    <div class="text-xs text-emerald-400 mt-0.5">от 1 900 ₽</div>
+                                </button>
+                                <button type="button" data-type="report" data-base="600" data-pages="12" class="work-type-btn bg-gray-950 border-gray-800 text-gray-300 border p-3 rounded-xl text-left transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">Реферат / Доклад</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">от 600 ₽</div>
+                                </button>
+                                <button type="button" data-type="practice" data-base="1800" data-pages="20" class="work-type-btn bg-gray-950 border-gray-800 text-gray-300 border p-3 rounded-xl text-left transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">Отчет по практике</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">от 1 800 ₽</div>
+                                </button>
+                                <button type="button" data-type="practical" data-base="800" data-pages="10" class="work-type-btn bg-gray-950 border-gray-800 text-gray-300 border p-3 rounded-xl text-left transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">Практическая</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">от 800 ₽</div>
+                                </button>
+                                <button type="button" data-type="presentation" data-base="500" data-pages="12" class="work-type-btn bg-gray-950 border-gray-800 text-gray-300 border p-3 rounded-xl text-left transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">Презентация</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">от 500 ₽</div>
+                                </button>
+                                <button type="button" data-type="other" data-base="500" data-pages="5" class="work-type-btn bg-gray-950 border-gray-800 text-gray-300 border p-3 rounded-xl text-left transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">ГОСТ / Оформление</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">от 400 ₽</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Объем страниц -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">2. Объем страниц / слайдов</label>
+                                <span id="pagesDisplay" class="text-emerald-400 font-bold text-base bg-emerald-500/10 px-2.5 py-0.5 rounded-lg border border-emerald-500/20">25 стр.</span>
+                            </div>
+                            <input id="pagesSlider" type="range" min="5" max="60" value="25" step="1" class="w-full cursor-pointer">
+                            <div class="flex justify-between text-[11px] text-gray-500 mt-1">
+                                <span>5 стр.</span>
+                                <span>25 стр.</span>
+                                <span>45 стр.</span>
+                                <span>60+ стр.</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Срочность -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2.5">3. Сроки сдачи</label>
+                            <div class="grid grid-cols-3 gap-2.5" id="urgencyContainer">
+                                <button type="button" data-urgency="standard" data-mult="1.0" class="urgency-btn active bg-emerald-500/10 border-emerald-500 text-white border p-2.5 rounded-xl text-center transition">
+                                    <div class="text-xs font-medium text-gray-400">Стандарт</div>
+                                    <div class="font-semibold text-sm mt-0.5">5–7 дней</div>
+                                </button>
+                                <button type="button" data-urgency="fast" data-mult="1.2" class="urgency-btn bg-gray-950 border-gray-800 text-gray-300 border p-2.5 rounded-xl text-center transition hover:border-gray-700">
+                                    <div class="text-xs font-medium text-gray-400">Быстро</div>
+                                    <div class="font-semibold text-sm mt-0.5">2–3 дня</div>
+                                </button>
+                                <button type="button" data-urgency="urgent" data-mult="1.4" class="urgency-btn bg-gray-950 border-gray-800 text-gray-300 border p-2.5 rounded-xl text-center transition hover:border-gray-700">
+                                    <div class="text-xs font-medium text-amber-400">🔥 Горит</div>
+                                    <div class="font-semibold text-sm mt-0.5">24 часа</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4. Оригинальность -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2.5">4. Нужная оригинальность</label>
+                            <div class="grid grid-cols-3 gap-2.5" id="origContainer">
+                                <button type="button" data-orig="standard" data-mult="1.0" class="orig-btn active bg-emerald-500/10 border-emerald-500 text-white border p-2.5 rounded-xl text-center transition">
+                                    <div class="font-semibold text-sm">60–70%</div>
+                                    <div class="text-[11px] text-gray-400">Стандарт</div>
+                                </button>
+                                <button type="button" data-orig="high" data-mult="1.15" class="orig-btn bg-gray-950 border-gray-800 text-gray-300 border p-2.5 rounded-xl text-center transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">75–80%</div>
+                                    <div class="text-[11px] text-gray-400">Повышенная</div>
+                                </button>
+                                <button type="button" data-orig="maximum" data-mult="1.3" class="orig-btn bg-gray-950 border-gray-800 text-gray-300 border p-2.5 rounded-xl text-center transition hover:border-gray-700">
+                                    <div class="font-semibold text-sm">85%+</div>
+                                    <div class="text-[11px] text-gray-400">Строгий ВУЗ</div>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Правая колонка: Итоговый расчет и заявка -->
+                    <div class="lg:col-span-5 bg-gray-950/80 border border-gray-800 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+                        
+                        <div>
+                            <div class="text-xs font-semibold uppercase tracking-wider text-gray-400">Ориентировочная стоимость</div>
+                            <div class="flex items-baseline gap-2 mt-2">
+                                <span id="totalPrice" class="text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight">1 900 ₽</span>
+                                <span class="text-gray-400 text-xs">/ без наценок</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Правки по замечаниям уже включены
+                            </p>
+                        </div>
+
+                        <!-- Сводка параметров -->
+                        <div class="bg-gray-900 border border-gray-800/80 rounded-xl p-4 text-xs space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Тип:</span>
+                                <span id="summaryType" class="font-medium text-gray-200">Курсовая работа</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Объем:</span>
+                                <span id="summaryPages" class="font-medium text-gray-200">25 стр.</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Срок:</span>
+                                <span id="summaryUrgency" class="font-medium text-gray-200">5–7 дней</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Оригинальность:</span>
+                                <span id="summaryOrig" class="font-medium text-gray-200">60–70%</span>
+                            </div>
+                        </div>
+
+                        <!-- Сгенерированный текст заявки -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Текст готовой заявки:</label>
+                            <textarea id="orderSummaryText" rows="4" readonly 
+                                class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-xs text-gray-300 font-mono resize-none focus:outline-none select-all"></textarea>
+                        </div>
+
+                        <!-- Кнопки действий -->
+                        <div class="space-y-2.5">
+                            <a id="tgDirectBtn" href="#" target="_blank" rel="noopener noreferrer" 
+                               class="w-full py-3.5 px-4 bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold rounded-xl text-center flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/25">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                                Отправить в Telegram
+                            </a>
+
+                            <button id="copySummaryBtn" type="button" 
+                                class="w-full py-3 px-4 bg-gray-900 hover:bg-gray-800 text-gray-200 border border-gray-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Скопировать текст для VK / чата
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Сравнение: Агентства vs Мы -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white">Почему не стоит кормить агентства?</h2>
+                <p class="text-sm text-gray-400 mt-2">Ты платишь за реальную работу, а не за зарплату менеджеров и контекстную рекламу</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Агентства -->
+                <div class="bg-gray-900/40 border border-red-950/50 p-6 sm:p-8 rounded-2xl relative overflow-hidden">
+                    <div class="text-red-400 font-bold text-lg mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        Сайты-агрегаторы и конторы
+                    </div>
+                    <ul class="space-y-3.5 text-sm text-gray-400">
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-red-400 font-bold">✕</span>
+                            <span><strong>Ценник от 6 000 до 8 500 ₽:</strong> гигантская наценка за содержание сайта и рекламу.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-red-400 font-bold">✕</span>
+                            <span><strong>Нет прямого контакта:</strong> ты общаешься с менеджером, который ничего не смыслит в твоей теме.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-red-400 font-bold">✕</span>
+                            <span><strong>Платные доработки:</strong> за каждую правку препода с тебя требуют еще 1000–1500 ₽.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-red-400 font-bold">✕</span>
+                            <span><strong>Срыв сроков:</strong> заказы перекидывают сторонним авторам без контроля.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Наш сервис -->
+                <div class="bg-emerald-950/20 border border-emerald-500/40 p-6 sm:p-8 rounded-2xl relative overflow-hidden shadow-xl shadow-emerald-950/30">
+                    <div class="text-emerald-400 font-bold text-lg mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        КурсачБезНаценок (Напрямую автору)
+                    </div>
+                    <ul class="space-y-3.5 text-sm text-gray-300">
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-emerald-400 font-bold">✓</span>
+                            <span><strong>Адекватные 1 800 – 2 500 ₽:</strong> честная студенческая цена без переплат.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-emerald-400 font-bold">✓</span>
+                            <span><strong>Прямой диалог в TG:</strong> пишешь сразу тому, кто делает работу, правки вносятся мгновенно.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-emerald-400 font-bold">✓</span>
+                            <span><strong>Бесплатные доработки:</strong> все комментарии научника устраняются бесплатно до сдачи.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-emerald-400 font-bold">✓</span>
+                            <span><strong>Безопасная оплата 50/50:</strong> проверяешь отчет антиплагиата и скрины перед финальным расчетом.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Пошаговый процесс работы -->
+        <section class="space-y-8">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Все прозрачно</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Как мы работаем</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-2">
+                    <div class="text-emerald-400 font-black text-2xl">01</div>
+                    <h3 class="font-bold text-base text-gray-100">Тема и методичка</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Скидываешь в Telegram тему, требования и методичку кафедры. Оцениваем бесплатно за 10 минут.</p>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-2">
+                    <div class="text-emerald-400 font-black text-2xl">02</div>
+                    <h3 class="font-bold text-base text-gray-100">Фиксация и аванс</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Фиксируем цену и дедлайн. Вносишь небольшой аванс (30-50%), и автор сразу садится за работу.</p>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-2">
+                    <div class="text-emerald-400 font-black text-2xl">03</div>
+                    <h3 class="font-bold text-base text-gray-100">Проверка и скрины</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Присылаем видео/скриншоты готовых глав и официальный отчет проверки на антиплагиат.</p>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-2">
+                    <div class="text-emerald-400 font-black text-2xl">04</div>
+                    <h3 class="font-bold text-base text-gray-100">Файл и поддержка</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Оплачиваешь остаток, получаешь файл .docx. Если препод скажет что-то поправить — правим бесплатно.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ: Часто задаваемые вопросы -->
+        <section id="faq" class="max-w-3xl mx-auto space-y-6 scroll-mt-24">
+            <div class="text-center">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white">Частые вопросы</h2>
+                <p class="text-sm text-gray-400 mt-1">Ответы на то, о чем переживает каждый студент</p>
+            </div>
+
+            <div class="space-y-3" id="faqAccordion">
+                <!-- FAQ 1 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                    <button type="button" class="faq-btn w-full px-5 py-4 text-left flex justify-between items-center text-sm font-semibold text-gray-200 hover:text-white">
+                        <span>Какой антиплагиат пройдет работа?</span>
+                        <svg class="faq-icon w-4 h-4 text-emerald-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+                        Работа подгоняется под требования вашей кафедры (Антиплагиат.ВУЗ или Antiplagiat.ru). Мы не используем скрытые символы или белые знаки, которые сразу палятся преподавателем, только ручной смысловой рерайт и качественные научные источники.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                    <button type="button" class="faq-btn w-full px-5 py-4 text-left flex justify-between items-center text-sm font-semibold text-gray-200 hover:text-white">
+                        <span>Что делать, если преподаватель отправил на доработку?</span>
+                        <svg class="faq-icon w-4 h-4 text-emerald-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+                        Все замечания по утвержденному изначально плану и методичке вносятся абсолютно бесплатно. Ты просто пересылаешь комментарии преподавателя, и мы оперативно вносим правки.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                    <button type="button" class="faq-btn w-full px-5 py-4 text-left flex justify-between items-center text-sm font-semibold text-gray-200 hover:text-white">
+                        <span>Как происходит оплата?</span>
+                        <svg class="faq-icon w-4 h-4 text-emerald-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+                        Мы работаем по честной схеме 50/50: половина суммы вносится как аванс перед началом написания. Вторую часть ты переводишь только после того, как увидишь скрины готового текста и отчет антиплагиата.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                    <button type="button" class="faq-btn w-full px-5 py-4 text-left flex justify-between items-center text-sm font-semibold text-gray-200 hover:text-white">
+                        <span>В какие сроки можно сделать работу?</span>
+                        <svg class="faq-icon w-4 h-4 text-emerald-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+                        Обычный срок написания курсовой — 4–7 дней. Если сроки горят, можем написать срочную работу за 24–48 часов (с небольшой доплатой за срочность). Рефераты и практические работы делаются за 1–2 дня.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Финальный призыв к действию -->
+        <section class="bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-8 sm:p-12 text-center max-w-3xl mx-auto space-y-5">
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Горят дедлайны? Не жди сессии</h2>
+            <p class="text-gray-400 text-sm max-w-xl mx-auto">
+                Скинь методичку и тему прямо сейчас в Telegram. Это ни к чему не обязывает — мы бесплатно посчитаем точную стоимость и назовем срок.
+            </p>
+            <div class="pt-2">
+                <a id="ctaTgBtn" href="https://t.me/your_telegram" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold px-7 py-3.5 rounded-xl text-base transition shadow-xl shadow-emerald-500/25">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                    Написать автору в Telegram
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer class="border-t border-gray-900 bg-gray-950/80 py-8 px-4 text-center text-xs text-gray-500 mt-16">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                © <span id="currentYear">2026</span> «КурсачБезНаценок». Помощь студентам без посредников.
+            </div>
+            <div class="flex items-center gap-4 text-gray-400">
+                <a href="#calc" class="hover:text-emerald-400 transition">Калькулятор</a>
+                <a href="#faq" class="hover:text-emerald-400 transition">Вопросы</a>
+                <a id="footerTgLink" href="https://t.me/your_telegram" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition">Telegram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипт калькулятора и логики страницы -->
+    <script>
+        // Вставь свой реальный юзернейм в Telegram без знака @
+        const TELEGRAM_USERNAME = "your_telegram";
+
+        // Обновление ссылок на Telegram в DOM
+        function updateTgLinks() {
+            const defaultTgUrl = `https://t.me/${TELEGRAM_USERNAME}`;
+            const navLink = document.getElementById('navTgLink');
+            const ctaBtn = document.getElementById('ctaTgBtn');
+            const footerLink = document.getElementById('footerTgLink');
+            if (navLink) navLink.href = defaultTgUrl;
+            if (ctaBtn) ctaBtn.href = defaultTgUrl;
+            if (footerLink) footerLink.href = defaultTgUrl;
+        }
+
+        // Параметры калькулятора
+        const state = {
+            typeKey: 'course',
+            typeName: 'Курсовая работа',
+            basePrice: 1900,
+            defaultPages: 25,
+            pages: 25,
+            urgencyKey: 'standard',
+            urgencyName: '5–7 дней (Стандарт)',
+            urgencyMult: 1.0,
+            origKey: 'standard',
+            origName: '60–70%',
+            origMult: 1.0,
+            totalPrice: 1900
+        };
+
+        const workTypeNames = {
+            course: 'Курсовая работа',
+            report: 'Реферат / доклад',
+            practice: 'Отчет по практике',
+            practical: 'Практическая работа',
+            presentation: 'Презентация',
+            other: 'ГОСТ оформление'
+        };
+
+        const urgencyNames = {
+            standard: '5–7 дней (Стандарт)',
+            fast: '2–3 дня (Быстро)',
+            urgent: '24 часа (🔥 Горит)'
+        };
+
+        const origNames = {
+            standard: '60–70%',
+            high: '75–80%',
+            maximum: '85%+'
+        };
+
+        // DOM элементы
+        const workTypeButtons = document.querySelectorAll('.work-type-btn');
+        const urgencyButtons = document.querySelectorAll('.urgency-btn');
+        const origButtons = document.querySelectorAll('.orig-btn');
+        const pagesSlider = document.getElementById('pagesSlider');
+        const pagesDisplay = document.getElementById('pagesDisplay');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const summaryTypeEl = document.getElementById('summaryType');
+        const summaryPagesEl = document.getElementById('summaryPages');
+        const summaryUrgencyEl = document.getElementById('summaryUrgency');
+        const summaryOrigEl = document.getElementById('summaryOrig');
+        const orderSummaryText = document.getElementById('orderSummaryText');
+        const tgDirectBtn = document.getElementById('tgDirectBtn');
+        const copySummaryBtn = document.getElementById('copySummaryBtn');
+
+        // Расчет цены
+        function calculate() {
+            // Формула: базовая цена + небольшая корректировка на объем страниц, умноженная на срочность и плагиат
+            const pageRatio = state.pages / state.defaultPages;
+            // Умеренное влияние страниц (коэффициент 0.6 базы + 0.4 от масштаба страниц)
+            let rawPrice = state.basePrice * (0.6 + 0.4 * pageRatio);
+            rawPrice *= state.urgencyMult;
+            rawPrice *= state.origMult;
+
+            // Округление до красивых 50 рублей
+            state.totalPrice = Math.round(rawPrice / 50) * 50;
+
+            // Обновление интерфейса
+            totalPriceEl.textContent = `${state.totalPrice.toLocaleString('ru-RU')} ₽`;
+            summaryTypeEl.textContent = state.typeName;
+            summaryPagesEl.textContent = `${state.pages} стр.`;
+            summaryUrgencyEl.textContent = state.urgencyName;
+            summaryOrigEl.textContent = state.origName;
+
+            // Формирование текста заявки
+            const orderText = `Салют! Хочу заказать работу:\n` +
+                              `• Тип: ${state.typeName}\n` +
+                              `• Объем: ~${state.pages} стр.\n` +
+                              `• Срок: ${state.urgencyName}\n` +
+                              `• Антиплагиат: ${state.origName}\n` +
+                              `• Оценка на сайте: ~${state.totalPrice} ₽\n\n` +
+                              `Тема и методичка:`;
+
+            orderSummaryText.value = orderText;
+
+            // Формирование ссылки в Telegram с предзаполненным текстом
+            const tgEncoded = encodeURIComponent(orderText);
+            tgDirectBtn.href = `https://t.me/${TELEGRAM_USERNAME}?text=${tgEncoded}`;
+        }
+
+        // Слушатели для типов работ
+        workTypeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                workTypeButtons.forEach(b => {
+                    b.classList.remove('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                    b.classList.add('bg-gray-950', 'border-gray-800', 'text-gray-300');
+                });
+                btn.classList.add('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                btn.classList.remove('bg-gray-950', 'border-gray-800', 'text-gray-300');
+
+                state.typeKey = btn.dataset.type;
+                state.typeName = workTypeNames[state.typeKey];
+                state.basePrice = parseFloat(btn.dataset.base);
+                state.defaultPages = parseInt(btn.dataset.pages);
+
+                // Корректируем ползунок под выбранный тип работы
+                state.pages = state.defaultPages;
+                pagesSlider.value = state.pages;
+                pagesDisplay.textContent = `${state.pages} стр.`;
+
+                calculate();
+            });
+        });
+
+        // Слушатель для ползунка страниц
+        pagesSlider.addEventListener('input', (e) => {
+            state.pages = parseInt(e.target.value);
+            pagesDisplay.textContent = `${state.pages} стр.`;
+            calculate();
+        });
+
+        // Слушатели для срочности
+        urgencyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                urgencyButtons.forEach(b => {
+                    b.classList.remove('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                    b.classList.add('bg-gray-950', 'border-gray-800', 'text-gray-300');
+                });
+                btn.classList.add('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                btn.classList.remove('bg-gray-950', 'border-gray-800', 'text-gray-300');
+
+                state.urgencyKey = btn.dataset.urgency;
+                state.urgencyMult = parseFloat(btn.dataset.mult);
+                state.urgencyName = urgencyNames[state.urgencyKey];
+                calculate();
+            });
+        });
+
+        // Слушатели для оригинальности
+        origButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                origButtons.forEach(b => {
+                    b.classList.remove('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                    b.classList.add('bg-gray-950', 'border-gray-800', 'text-gray-300');
+                });
+                btn.classList.add('active', 'bg-emerald-500/10', 'border-emerald-500', 'text-white');
+                btn.classList.remove('bg-gray-950', 'border-gray-800', 'text-gray-300');
+
+                state.origKey = btn.dataset.orig;
+                state.origMult = parseFloat(btn.dataset.mult);
+                state.origName = origNames[state.origKey];
+                calculate();
+            });
+        });
+
+        // Копирование заявки в буфер обмена (надежный способ через textarea + execCommand)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+            }, 2500);
+        }
+
+        copySummaryBtn.addEventListener('click', () => {
+            orderSummaryText.select();
+            orderSummaryText.setSelectionRange(0, 99999);
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Текст заявки скопирован в буфер!');
+                } else {
+                    showToast('Выделите текст и нажмите Ctrl+C');
+                }
+            } catch (err) {
+                showToast('Скопируйте текст вручную');
+            }
+        });
+
+        // Аккордеон для FAQ
+        const faqButtons = document.querySelectorAll('.faq-btn');
+        faqButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('.faq-icon');
+                const isHidden = content.classList.contains('hidden');
+
+                // Закрываем другие
+                document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+                document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('rotate-180'));
+
+                if (isHidden) {
+                    content.classList.remove('hidden');
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+
+        // Инициализация при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            updateTgLinks();
+            calculate();
+            const yearSpan = document.getElementById('currentYear');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
